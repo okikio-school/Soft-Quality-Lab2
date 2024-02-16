@@ -26,10 +26,8 @@ import static org.mockito.BDDMockito.*;
 @RunWith(SpringRunner.class)
 @WebMvcTest(BinaryController.class)
 public class BinaryControllerTest {
-
     @Autowired
     private MockMvc mvc;
-
    
     @Test
     public void getDefault() throws Exception {
@@ -40,7 +38,7 @@ public class BinaryControllerTest {
 			.andExpect(model().attribute("operand1Focused", false));
     }
 	
-	    @Test
+    @Test
     public void getParameter() throws Exception {
         this.mvc.perform(get("/").param("operand1","111"))
             .andExpect(status().isOk())
@@ -48,13 +46,41 @@ public class BinaryControllerTest {
 			.andExpect(model().attribute("operand1", "111"))
 			.andExpect(model().attribute("operand1Focused", true));
     }
+
 	@Test
-	    public void postParameter() throws Exception {
+    public void postParameter() throws Exception {
         this.mvc.perform(post("/").param("operand1","111").param("operator","+").param("operand2","111"))//.andDo(print())
             .andExpect(status().isOk())
             .andExpect(view().name("result"))
 			.andExpect(model().attribute("result", "1110"))
 			.andExpect(model().attribute("operand1", "111"));
+    }
+
+	@Test
+    public void andParameter() throws Exception {
+        this.mvc.perform(post("/").param("operand1","111").param("operator","&").param("operand2","111"))//.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("result"))
+			.andExpect(model().attribute("result", "111"))
+			.andExpect(model().attribute("operand1", "111"));
+    }
+
+	@Test
+    public void orParameter() throws Exception {
+        this.mvc.perform(post("/").param("operand1","111").param("operator","|").param("operand2","111"))//.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("result"))
+			.andExpect(model().attribute("result", "111"))
+			.andExpect(model().attribute("operand1", "111"));
+    }
+
+	@Test
+    public void multiplyParameter() throws Exception {
+        this.mvc.perform(post("/").param("operand1","1010").param("operator","*").param("operand2","101"))//.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(view().name("result"))
+			.andExpect(model().attribute("result", "110010"))
+			.andExpect(model().attribute("operand1", "1010"));
     }
 
 }
